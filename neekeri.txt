@@ -1,0 +1,123 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "ronttos boomboc",
+    LoadingTitle = "ronttos boomboc",
+    LoadingSubtitle = "by Ronttosaurus54321",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "NEWWORLDBOOMBOX"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "noinvitelink",
+        RememberJoins = true
+    },
+    KeySystem = false
+})
+
+local MainTab = Window:CreateTab("Audio Player", nil)
+local Section = MainTab:CreateSection("Audio Controls")
+
+Rayfield:Notify({
+    Title = "Script Executed",
+    Content = "helou",
+    Duration = 6.5
+})
+
+local sound = Instance.new("Sound", game.Workspace)
+sound.Name = "DynamicAudio"
+sound.Looped = true
+sound.Volume = 1
+
+local groupAudioIds = {
+    "1234567890",
+    "0987654321",
+    "1122334455"
+}
+
+local GroupAudioDropdown = MainTab:CreateDropdown({
+    Name = "Select Group Audio",
+    Options = groupAudioIds,
+    Callback = function(selectedAudioId)
+        sound.SoundId = "rbxassetid://" .. selectedAudioId
+        sound:Play()
+    end
+})
+
+local AudioIDBox = MainTab:CreateTextbox({
+    Name = "Enter Audio ID",
+    Default = "Insert Audio ID here",
+    TextDisappear = true,
+    Callback = function(audioId)
+        if tonumber(audioId) then
+            sound.SoundId = "rbxassetid://" .. audioId
+            sound:Play()
+        else
+            warn("Invalid Audio ID")
+        end
+    end
+})
+
+local PitchSlider = MainTab:CreateSlider({
+    Name = "Pitch",
+    Min = 0.5,
+    Max = 10,
+    Default = 1,
+    Increment = 0.01,
+    Callback = function(value)
+        sound.PlaybackSpeed = value
+    end
+})
+
+sound.Loaded:Wait() -- Ensure sound is loaded to get the TimeLength
+local TimePosSlider = MainTab:CreateSlider({
+    Name = "Time Position",
+    Min = 0,
+    Max = sound.TimeLength,
+    Default = 0,
+    Increment = 0.1,
+    Callback = function(value)
+        sound.TimePosition = value
+    end
+})
+
+local distortionEffect = Instance.new("DistortionSoundEffect", sound)
+distortionEffect.Level = 0
+
+local DistortionSlider = MainTab:CreateSlider({
+    Name = "Distortion",
+    Min = 0,
+    Max = 10,
+    Default = 0,
+    Increment = 0.1,
+    Callback = function(value)
+        distortionEffect.Level = value / 10
+    end
+})
+
+local PlayButton = MainTab:CreateButton({
+    Name = "Play Sound",
+    Callback = function()
+        if not sound.IsPlaying then
+            sound:Play()
+        else
+            sound:Resume()
+        end
+    end
+})
+
+local StopButton = MainTab:CreateButton({
+    Name = "Stop Sound",
+    Callback = function()
+        sound:Stop()
+    end
+})
+
+local PauseButton = MainTab:CreateButton({
+    Name = "Pause Sound",
+    Callback = function()
+        sound:Pause()
+    end
+})
