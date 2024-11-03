@@ -2,7 +2,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
     Name = "ronttos boomboc",
-    LoadingTitle = "ronttos boomboc",
+    LoadingTitle = "ronttos Boomboc",
     LoadingSubtitle = "by Ronttosaurus54321",
     ConfigurationSaving = {
         Enabled = true,
@@ -22,7 +22,7 @@ local Section = MainTab:CreateSection("Audio Controls")
 
 Rayfield:Notify({
     Title = "Script Executed",
-    Content = "Welcome to Rontto's Boombox!",
+    Content = "Welcome to Rontto's Boomboc!",
     Duration = 6.5
 })
 
@@ -93,6 +93,7 @@ local TimePosSlider = MainTab:CreateSlider({
     end
 })
 
+-- Distortion Effect Slider
 local distortionEffect = Instance.new("DistortionSoundEffect", sound)
 distortionEffect.Level = 0
 
