@@ -32,9 +32,11 @@ sound.Looped = true
 sound.Volume = 1
 
 local groupAudioIds = {
-    "34085849",
-    "",
-    ""
+    "93835951547519",
+    "94564237869280",
+    "77666494478031",
+    "126513983726334",
+    "18596455580"
 }
 
 local GroupAudioDropdown = MainTab:CreateDropdown({
