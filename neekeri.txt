@@ -1,54 +1,57 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local pastebinUrls = {
+    "https://pastebin.com/raw/fm7cbpby",
+    "https://pastebin.com/raw/51rw40CS", 
+    "https://pastebin.com/raw/gzquQjTK"
+}
 
+local groupAudioIds = {}
+
+local function loadAudioIdsFromPastebin(url)
+    local success, result = pcall(function()
+        return game:HttpGet(url)
+    end)
+    
+    if success then
+        for audioId in result:gmatch("[^\r\n]+") do
+            table.insert(groupAudioIds, audioId)
+        end
+    else
+        warn("Failed to fetch audio IDs from " .. url .. ": " .. tostring(result))
+    end
+end
+
+for _, url in ipairs(pastebinUrls) do
+    loadAudioIdsFromPastebin(url)
+end
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-    Name = "ronttos boomboc",
-    LoadingTitle = "ronttos Boomboc",
+    Name = "Rontto's Boombox",
+    LoadingTitle = "Loading Rontto's Boombox",
     LoadingSubtitle = "by Ronttosaurus54321",
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = nil,
-        FileName = "NEWWORLDBOOMBOX"
-    },
-    Discord = {
-        Enabled = false,
-        Invite = "noinvitelink",
-        RememberJoins = true
-    },
-    KeySystem = false
+        FolderName = "NEWWORLDBOOMBOX",
+        FileName = "RonttoBoomboxConfig"
+    }
 })
 
 local MainTab = Window:CreateTab("Audio Player", nil)
-local Section = MainTab:CreateSection("Audio Controls")
+local Section = MainTab:CreateSection("Select and Play Audio")
 
-Rayfield:Notify({
-    Title = "Script Executed",
-    Content = "Welcome to Rontto's Boomboc!",
-    Duration = 6.5
-})
-
+-- Sound object to play selected audios
 local sound = Instance.new("Sound", game.Workspace)
 sound.Name = "DynamicAudio"
 sound.Looped = true
 sound.Volume = 1
 
-local groupAudioIds = {
-    "93835951547519",
-    "94564237869280",
-    "77666494478031",
-    "126513983726334",
-    "18596455580"
-}
-
 local GroupAudioDropdown = MainTab:CreateDropdown({
     Name = "Select Group Audio",
-    Options = groupAudioIds,
+    Options = groupAudioIds, -- Use groupAudioIds as the options
     Callback = function(selectedAudioId)
-        -- Ensure the selected ID is a valid string/number and set the SoundId
-        if selectedAudioId and tonumber(selectedAudioId) then
+        if selectedAudioId then
             sound.SoundId = "rbxassetid://" .. selectedAudioId
             print("Selected Group Audio ID: " .. selectedAudioId)
-            
-            -- Ensure the sound is loaded before playing
             sound:Play()
         else
             warn("Invalid Audio ID selected or conversion failed.")
@@ -56,59 +59,7 @@ local GroupAudioDropdown = MainTab:CreateDropdown({
     end
 })
 
-local AudioIDBox = MainTab:CreateTextbox({
-    Name = "Enter Audio ID",
-    Default = "Insert Audio ID here",
-    TextDisappear = true,
-    Callback = function(audioId)
-        if tonumber(audioId) then
-            sound.SoundId = "rbxassetid://" .. audioId
-            sound:Play()
-        else
-            warn("Invalid Audio ID entered.")
-        end
-    end
-})
-
-local PitchSlider = MainTab:CreateSlider({
-    Name = "Pitch",
-    Min = 0.5,
-    Max = 10,
-    Default = 1,
-    Increment = 0.01,
-    Callback = function(value)
-        sound.PlaybackSpeed = value
-    end
-})
-
-sound.Loaded:Wait() -- Ensure sound is loaded to get the TimeLength
-local TimePosSlider = MainTab:CreateSlider({
-    Name = "Time Position",
-    Min = 0,
-    Max = sound.TimeLength,
-    Default = 0,
-    Increment = 0.1,
-    Callback = function(value)
-        sound.TimePosition = value
-    end
-})
-
--- Distortion Effect Slider
-local distortionEffect = Instance.new("DistortionSoundEffect", sound)
-distortionEffect.Level = 0
-
-local DistortionSlider = MainTab:CreateSlider({
-    Name = "Distortion",
-    Min = 0,
-    Max = 10,
-    Default = 0,
-    Increment = 0.1,
-    Callback = function(value)
-        distortionEffect.Level = value / 10
-    end
-})
-
-local PlayButton = MainTab:CreateButton({
+MainTab:CreateButton({
     Name = "Play Sound",
     Callback = function()
         if not sound.IsPlaying then
@@ -119,16 +70,16 @@ local PlayButton = MainTab:CreateButton({
     end
 })
 
-local StopButton = MainTab:CreateButton({
-    Name = "Stop Sound",
-    Callback = function()
-        sound:Stop()
-    end
-})
-
-local PauseButton = MainTab:CreateButton({
+MainTab:CreateButton({
     Name = "Pause Sound",
     Callback = function()
         sound:Pause()
+    end
+})
+
+MainTab:CreateButton({
+    Name = "Stop Sound",
+    Callback = function()
+        sound:Stop()
     end
 })
